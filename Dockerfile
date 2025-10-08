@@ -4,14 +4,12 @@ FROM --platform=linux/amd64 node:18-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Alpine uses 'apk add' instead of 'apt-get install'.
+RUN apk update && \
+    apk add --no-cache \
     curl \
     nano \
-    bash && \
-    # Clean up to keep the image size small
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    bash
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -25,5 +23,5 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Command to run the application
+# Command to run the app
 CMD ["node", "index.js"]
